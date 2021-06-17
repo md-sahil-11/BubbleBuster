@@ -1,0 +1,456 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>bubble buster</title>
+    <link rel="stylesheet" href="/css/game.css">
+</head>
+
+<body>
+    
+    <section class="lobby">
+        {{room}}
+        <button id="toRoom">Start</button>
+        <div class="teams">
+            <div class="red">
+                Red
+            </div>
+            <div class="blue">
+                Blue
+            </div>
+        </div>
+    </section>
+    <section id="gameBody" style="display: none;"> 
+        <div class="gameOver">
+        </div>
+        <canvas style="opacity: 0.7;"></canvas>
+
+        <div class="notify">Game Over <br>
+            <button onclick="restart()">restart</button>
+        </div>
+
+        <div class="spikesTop"><img alt="#" src="/assets/images/spikes.png"></div>
+        <div class="spikesLeft"><img alt="#" src="/assets/images/spikeL.png"></div>
+        <div class="spikesBelow"><img alt="#" src="/assets/images/spikeB.png"></div>
+        <div class="spikesRight"><img alt="#" src="/assets/images/spikeR.png"></div>
+
+        <span class="redScore">
+            RED : 0
+        </span>
+        <span class="blueScore">
+            BLUE : 0
+        </span>
+        
+    </section>
+    
+</body>
+
+</html>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.5.1/gsap.min.js" integrity="sha512-IQLehpLoVS4fNzl7IfH8Iowfm5+RiMGtHykgZJl9AWMgqx0AmJ6cRWcB+GaGVtIsnC4voMfm8f2vwtY+6oPjpQ==" crossorigin="anonymous"></script>
+<script src="https://cdn.socket.io/socket.io-3.0.1.min.js"></script>
+<script>
+
+const socket = io()
+const toRoom = document.getElementById('toRoom')
+const red = document.querySelector('.red')
+const blue = document.querySelector('.blue')
+const redScore = document.querySelector('.redScore')
+const blueScore = document.querySelector('.blueScore')
+const lobby = document.querySelector('.lobby')
+const gameBody = document.querySelector('#gameBody')
+const winnerBlock = document.querySelector('.gameOver')
+const canvas = document.querySelector('canvas')
+const c = canvas.getContext('2d')
+let bomb = false
+let sheild = false
+canvas.width = innerWidth
+canvas.height = innerHeight
+
+const clientRoom = `{{room}}`
+const clientName = `{{player}}`
+
+socket.emit('roomJoin', {
+    roomName: `{{room}}`,
+    playerName: `{{player}}`
+})
+
+const send = {
+    room: clientRoom,
+    width: canvas.width,
+    height: canvas.height,
+    name: clientName
+}
+
+const roomPlayer = []
+socket.on('playerJoined', data => {
+    for(let i of data) {
+
+        if(!roomPlayer.includes(i.player)) {
+            
+            if(i.team == 'red')
+                red.innerHTML += '<div>' + i.player + '</div>'
+            else 
+                blue.innerHTML += '<div>' + i.player + '</div>'
+            roomPlayer.push(i.player)
+        }
+    }
+    socket.emit('boundaries', send)
+})
+
+toRoom.addEventListener('click', () => {
+   
+    socket.emit('gameStart', {
+        room: clientRoom
+    })
+})
+
+socket.on('game', (data) => {
+    console.log(players)
+    for(let i in data.players) {
+        players[i] = data.players[i]
+    }
+
+    for(let i in data.blocks) {
+        blocks[i] = data.blocks[i]
+    }
+    lobby.style.display = 'none'
+    gameBody.style.display = 'block'
+})
+
+const Red = {
+    x: 0,
+    y: innerHeight /2,
+    radius: 100,
+    score: 0,
+    working: true
+}
+Red.draw = function() {
+    c.beginPath()
+    try {
+        c.arc(Red.x, Red.y, Red.radius, 0, Math.PI * 2, false)
+    }
+    catch {}
+    c.fillStyle = 'rgba(255, 0, 0, 0.5)'
+    c.fill()
+    c.lineWidth = 10
+    c.strokeStyle = 'white'
+    c.stroke()
+}
+
+const Blue = {
+    x: innerWidth,
+    y: innerHeight /2,
+    radius: 100,
+    score: 0,
+    working: true
+}
+Blue.draw = function() {
+    
+    c.beginPath()
+    try {
+        c.arc(Blue.x, Blue.y, Blue.radius, 0, Math.PI * 2, false)
+    }
+    catch {}
+    c.fillStyle = 'rgba(0, 0, 255, 0.5)'
+    c.fill()
+    c.lineWidth = 10
+    c.strokeStyle = 'white'
+    c.stroke()
+}
+
+function blocksDraw() {
+
+    for(let i = 0; i < blocks.length; i++) {
+        c.fillStyle = 'white'
+        let b = blocks[i]
+        if(b.width > 5)
+            c.fillRect(b.x, b.y, b.width, b.height)
+    }
+}     
+
+class Player {
+    constructor(id, color, lineWidth, strokeStyle) {
+        this.id = id
+        this.sheild = false
+        this.x = 250
+        this.y = 250
+        this.radius = 30
+        this.color = color
+        this.lineWidth = lineWidth
+        this.strokeStyle = strokeStyle
+    }
+}
+const players = {}
+const blocks = []
+
+socket.on('block', (data) => {
+    blocks[data].width -= 0.5
+})
+
+socket.on('unvalidRoom', (data) => {
+
+    if(data == clientName) {
+        alert("room doesn't exist or game has been started in this room try entering another room")
+        window.location.href = '/landing'
+    }
+})
+
+socket.on('lessPlayer', () =>{
+    alert("not enough player at least two player should be in this room")
+})
+
+socket.on('init', data => {  
+
+    for(let i = 0; i < data.player.length; i++) {
+        players[data.player[i].id] = new Player(data.player[i].id, data.player[i].color, data.player[i].lineWidth, data.player[i].strokeStyle)
+    }
+
+    // for(let i = 0; i < data.projectile.length; i++) {
+    //     projectiles.push(new Projectile(data.projectile[i].x, data.projectile[i].y, data.projectile[i].color))
+    // }
+
+    for(let i = 0; i < data.block.length; i++) {
+        blocks.push(data.block[i])
+    }
+})
+
+socket.on('update', data => {
+    
+    for(let i = 0; i < data.player.length; i++) {
+        let pack = data.player[i]
+        let p = players[pack.id]
+
+        if(p) {
+            
+            if(p.x !== undefined) 
+                p.x = pack.x
+
+            if(p.y !== undefined) 
+                p.y = pack.y
+
+            if(p.radius !== undefined) 
+                gsap.to(p, { 
+                    radius: pack.radius
+                })
+
+            if(p.lineWidth !== undefined) {
+                p.lineWidth = pack.lineWidth
+            }
+
+            if(p.strokeStyle !== undefined) {
+                p.strokeStyle = pack.strokeStyle
+            }
+
+            p.sheild = pack.sheild
+        }
+    }
+
+    Red.radius = data.RedRadius
+    Blue.radius = data.BlueRadius
+    redScore.innerText = 'RED : ' + data.redScore
+    blueScore.innerText = 'BLUE : ' + data.blueScore
+})
+
+socket.on('remove', data => {
+
+    // for(let i = 0; i < data.projectile.length; i++)
+    //     projectiles.splice(data.projectile[i], 1)
+
+    for(let i = 0; i < data.player.length; i++) 
+        delete players[data.player[i]]
+
+    for(let i = 0; i < data.block.length; i++) {
+         blocks.splice(data.block[i], 1)
+    }
+})
+
+socket.on('display', data => {
+
+    for(let i = 0; i < data.projectile.length; i++) {
+        setTimeout(() => {
+            c.beginPath()
+            c.arc(data.projectile[i].x, data.projectile[i].y, data.projectile[i].radius, 0, Math.PI * 2, false)
+            c.fillStyle = data.projectile[i].color
+            c.fill()
+        }, 0)
+    }
+    
+    for(let i = 0; i < data.particle.length; i++) {
+        c.save()
+        c.globalAlpha = data.particle[i].alpha
+        c.beginPath()
+        c.arc(data.particle[i].x, data.particle[i].y, data.particle[i].radius, 0, Math.PI * 2, false)
+        c.fillStyle = data.particle[i].color
+        c.fill()
+        c.restore()
+    }
+
+    for(let i = 0; i < data.explosive.length; i++) {
+        setTimeout(() => {
+            c.drawImage(imgBomb, data.explosive[i].x, data.explosive[i].y, data.explosive[i].radius, data.explosive[i].radius)
+            
+        }, 0)
+    }
+
+    for(let i = 0; i < data.arrow.length; i++) {
+        c.save()
+        c.globalAlpha = data.arrow[i].alpha
+        c.beginPath()
+        c.arc(data.arrow[i].x, data.arrow[i].y, data.arrow[i].radius, 0, Math.PI * 2, false)
+        c.fillStyle = data.arrow[i].color
+        c.fill()
+        c.restore()
+    }
+
+    for(let i = 0; i < data.dummy.length; i++) {
+        var dummy = data.dummy[i]
+        // try {
+            c.beginPath()
+            c.arc(dummy.x, dummy.y, dummy.radius, 0, Math.PI *2, false)
+        // }
+        // catch {
+        //     c.arc(dummy.x, dummy.y, 0, 0, Math.PI *2, false)
+        // }
+        c.fillStyle = dummy.color
+        c.fill()
+    }
+
+    // for(let i = 0; i < data.sfx.length; i++) {
+    //     let projectileSFX = new Audio(data.sfx[i])
+    //     projectileSFX.play()
+    // }
+})
+
+document.addEventListener('keydown', keyDown)
+document.addEventListener('keyup', keyUp)
+canvas.addEventListener('mousedown', shoot) 
+
+function keyDown(e) {
+    e.preventDefault()
+
+    if(e.keyCode == 68)
+        socket.emit('keyPress', {
+            room: clientRoom,
+            key: 'right',
+            bool: true
+        })
+        
+    if(e.keyCode == 83)
+        socket.emit('keyPress', {
+            room: clientRoom,
+            key: 'down',
+            bool: true
+        })
+
+    if(e.keyCode == 65)
+        socket.emit('keyPress', {
+            room: clientRoom,
+            key: 'left',
+            bool: true
+        })
+
+    if(e.keyCode == 87)
+        socket.emit('keyPress', {
+            room: clientRoom,
+            key: 'up',
+            bool: true
+        })
+}
+
+function keyUp(e) {
+    e.preventDefault()
+
+    if(e.keyCode == 68)
+        socket.emit('keyPress', {
+            room: clientRoom,
+            key: 'right',
+            bool: false
+        })
+    
+    if(e.keyCode == 83)
+        socket.emit('keyPress', {
+            room: clientRoom,
+            key: 'down',
+            bool: false
+        })
+    
+    if(e.keyCode == 65)
+        socket.emit('keyPress', {
+            room: clientRoom,
+            key: 'left',
+            bool: false
+        })
+
+    if(e.keyCode == 87)
+        socket.emit('keyPress', {
+            room: clientRoom,
+            key: 'up',
+            bool: false
+        })
+    
+    if(e.keyCode == 82) {
+        bomb = bomb ? false : true
+    }
+
+    if(e.keyCode == 32) {
+        sheild = sheild ? false : true
+    }
+
+    socket.emit('sheild', {
+        room: clientRoom,
+        bool: sheild
+    })
+}
+
+function shoot(e) {
+    e.preventDefault()
+
+    socket.emit('shoot', {
+        room: clientRoom,
+        dirX: e.clientX,
+        dirY: e.clientY,
+        bomb: bomb,
+        soundFile: 'assets/audio/laser-sfx.m4a'
+    })
+    bomb = false
+}
+
+const imgBomb = new Image()
+imgBomb.src = '/assets/images/bomb3.png'
+
+let intervalID = setInterval(() => { 
+
+    c.fillStyle = 'rgba(0, 0, 0, 0.2)'
+    c.fillRect(0, 0, canvas.width, canvas.height)
+
+    Red.draw()
+    Blue.draw()
+    blocksDraw()
+
+    for(let i in players) {
+        c.beginPath()
+        try {
+            c.arc(players[i].x, players[i].y, players[i].radius, 0, Math.PI * 2, false)
+        }
+        catch {}
+        c.fillStyle = players[i].color
+        c.fill()
+        c.lineWidth = players[i].lineWidth
+        c.strokeStyle = players[i].strokeStyle
+        c.stroke()
+    }
+}, 25)
+
+socket.on('gameOver', winner => {
+    clearInterval(intervalID)
+    winnerBlock.style.display = 'block'
+    winnerBlock.innerHTML = winner
+
+    if(winner == 'RED WINS') winnerBlock.style.color = 'red'
+    if(winner == 'BLUE WINS') winnerBlock.style.color = 'blue'
+})
+</script>
+
+

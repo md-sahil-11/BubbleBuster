@@ -1,0 +1,78 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    overflow-x: hidden;
+    color: white;
+    font-family: sans-serif;
+    letter-spacing: 1px;
+    line-height: 30px;
+}
+
+::-webkit-scrollbar {
+    width: 10px;
+}
+
+::-webkit-scrollbar-track {
+    box-shadow: inset 0 0 5px grey;
+}
+
+::-webkit-scrollbar-thumb {
+    background: #1bbc96;
+}
+
+::selection {
+    background: none;
+}
+
+#sec-one , #sec-two{
+    width: 100vw;
+    height: 100vh;
+    background: #121212;
+}
+
+.sec1 {
+    width: 95%;
+    height: 90%;
+    background: url('../assets/images/dots.png');
+    background-size: contain;
+    background-position: center;
+    background-repeat: no-repeat;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+}
+
+.sec1 img {
+    height: 100%;
+    position: absolute;
+    right: 10%;
+    top: 0%;
+}
+
+.sec1 .sec1-desc {
+    margin-top: 50px;
+    margin-left: 70px;
+    width: 40%;
+    padding: 15px;
+}
+
+.sec1 .sec1-desc h1, #sec-two h1 {
+    font-size: 50px;
+    line-height: 60px;
+}
+
+.sec1 .sec1-desc p, #sec-two p {
+    letter-spacing: 2px;
+    margin-top: 37px;
+    font-size: 18px;
+    font-weight: 500;
+}
+
+#sec-two {
+    padding: 40px;
+    border-top: 4px solid #1bbc96;
+    position: relative;
+    overflow: hidden;
+}

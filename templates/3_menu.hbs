@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Bubble Buster</title>
+    <link rel="stylesheet" href="css/menu.css">
+</head>
+<body>
+    <div id="particles-js"></div>
+        <div class="cursor"></div>
+        <div class="container">
+        <div class="button" id="btn1" onclick="play()">
+            <p><span>Play</span></p>
+        
+        </div>
+        {{#if room}}
+            <div class="button" id="btn2" onclick="room()">
+                <p><span>Room</span></p>
+            
+            </div>
+        {{/if}}
+        <div class="button" id="btn3">
+            <p><span>Nukers</span></p>
+        
+        </div>
+        <div class="button" id="btn4">
+            <p><span>Help</span></p>
+        
+        </div>
+        </div>
+
+</body>
+<script src="https://cdn.jsdelivr.net/npm/particles.js@2.0.0/particles.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.5.1/gsap.min.js"></script>
+
+<script>
+    particlesJS.load('particles-js', 'json/menu.json', () => {
+    })
+    const mouseCursor = document.querySelector('.cursor')
+    const body = document.querySelector('body')
+    const particleBody = document.querySelector('#particles-js')
+
+    addEventListener("mousemove", cursor);
+    document.addEventListener('mouseover', () => {
+        mouseCursor.style.visibility = "visible"
+    })
+    document.addEventListener('mouseout', () => {
+        mouseCursor.style.visibility = "hidden"
+    })
+
+    function cursor(e) {
+        mouseCursor.style.top = e.pageY + 'px';
+        mouseCursor.style.left = e.pageX + 'px';
+    }
+
+    gsap.from('.container', { opacity: 0, duration: 1, ease: 'Power2.easeInOut' })
+    gsap.from('#btn1', { opacity: 0, duration: 1, ease: 'bounce.in', delay: "0.5" })
+    gsap.from('#btn2', { opacity: 0, duration: 1, ease: 'bounce.in' , delay: "1.0"})
+    gsap.from('#btn3', { opacity: 0, duration: 1, ease: 'bounce.in', delay: "1.5" })
+    gsap.from('#btn4', { opacity: 0, duration: 1, ease: 'bounce.in', delay: "2.0" })
+
+    let op = 0
+
+    let animID = setInterval(() => {
+        gsap.to(particleBody, { 
+            opacity: op
+        })
+
+        if(op > 1) clearInterval(animID)
+        else {
+            op += 0.1
+        }
+    }, 300)
+
+    function play() {
+        window.location.href = "/singlePlayer"
+    }
+
+    function room() {
+        window.location.href = `/bubbleBuster/{{username}}/{{roomname}}`
+    }
+</script>
+</html>

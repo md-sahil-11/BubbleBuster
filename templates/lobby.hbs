@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Lobby</title>
+</head>
+<body>
+    {{!-- <form action="/bubbleBuster" method="GET"> --}}
+        room: <input id='roomInput' type="text" name="room" placeholder="Enter Room/Create Room">
+        <button onclick="toRoom()">Join</button>
+    {{!-- </form> --}}
+</body>
+</html>
+<script>
+    var roomInput = document.querySelector('#roomInput')
+    
+    function toRoom(){
+        window.location.href = `/lobby/Axiom/${roomInput.value}`
+    }
+</script>

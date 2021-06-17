@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Bubble Buster </title>
+    <link rel="stylesheet" href="css/hero.css" />
+    <link rel="preconnect" href="https://fonts.gstatic.com">
+    <link href="https://fonts.googleapis.com/css2?family=Nerko+One&display=swap" rel="stylesheet">
+</head>
+
+<body>
+    
+    <header>
+        <div class="head">
+        <h1 id="heading">Bubble Buster</h1>
+        </div>
+    </header>
+
+    <div class="container1">
+        <div class="box-1">
+            <div class="btn btn-one">
+                <h4>PLAY</h4>
+            </div>
+        </div>
+    </div>
+</body>
+</html>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.5.1/gsap.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.5.1/ScrollTrigger.min.js"></script>
+
+<script type="text/javascript">
+    const btn = document.querySelector('.btn')
+    const heading = document.querySelector('#heading')
+    const audio = new Audio("https://s3-us-west-2.amazonaws.com/s.cdpn.io/630634/bubble.mp3")
+    let time = 200
+    let createBubbleTime = 50
+    let removeBubbleTime = 4000
+    let maxSize = 60
+    let minTop = 49
+
+    btn.addEventListener('click', () => {
+        time = 150
+        createBubbleTime = 15
+        removeBubbleTime = 2000
+        maxSize = 80
+        minTop = 48
+        formBubble()
+        setTimeout(() => {
+            window.location.href = '/landing'
+        }, 1500)
+    })
+       
+    function oscillate() {
+        let turn = 0
+        setInterval(() => {
+        
+            if(turn %2 == 0) {
+                heading.style.top = "49.5%"
+            }
+            else {
+                heading.style.top = minTop + "%"
+            }
+            turn++
+        }, time)
+    }
+
+    oscillate()
+
+
+    function createBubble() {
+        const section = document.querySelector('body')
+        const createElement = document.createElement('span')
+        var size = Math.random() * maxSize;
+        createElement.style.width = 2* size + 'px';
+        createElement.style.height = 2* size + 'px';
+        createElement.style.left = Math.random()* innerWidth + "px";
+        section.appendChild(createElement);
+
+        setTimeout(() => {
+            createElement.remove()
+            //audio.play()
+        }, removeBubbleTime)
+    }
+
+    function formBubble() {
+        setInterval(createBubble, createBubbleTime)
+    }
+
+    formBubble()
+
+    gsap.from('.head', { opacity: 0, duration: 1, ease: 'Power2.easeInOut', delay: 0.4 })
+    gsap.from('.container1', { opacity: 0, duration: 1, ease: 'elastic', delay: 0.9 })
+</script>       

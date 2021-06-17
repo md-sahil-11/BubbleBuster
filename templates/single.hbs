@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Bubble Buster</title>
+    <link rel="stylesheet" href="/css/game.css">
+    <style>
+        body {
+            background: url('../assets/images/game5bg.jpg');
+    background-position: center;
+    background-size: cover;
+    background-repeat: no-repeat;
+        }
+    </style>
+</head>
+
+<body>
+    <canvas style="opacity: 0.7;"></canvas>
+
+    <div class="notify">Game Over <br>
+        <button onclick="restart()">restart</button>
+    </div>
+
+    <div class="status">
+        <div>
+            <h3>Score : <span class="score">0</span></h3>
+        </div>
+
+        <div class="booster-container">
+            <div class="booster"></div>
+        </div>
+
+        <div class="sheild-container">
+            <div class="sheild"></div>
+        </div>
+    </div>
+</body>
+
+</html>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.5.1/gsap.min.js" integrity="sha512-IQLehpLoVS4fNzl7IfH8Iowfm5+RiMGtHykgZJl9AWMgqx0AmJ6cRWcB+GaGVtIsnC4voMfm8f2vwtY+6oPjpQ==" crossorigin="anonymous"></script>
+<script src="/js/game.js"></script>

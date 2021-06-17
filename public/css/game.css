@@ -1,0 +1,159 @@
+* {
+    padding: 0;
+    margin: 0;
+    box-sizing: border-box;
+}
+
+body {
+    overflow: hidden;
+}
+
+#gameBody {
+    width: 100%;
+    height: 100%;
+    background: url('../assets/images/game5bg.jpg');
+    background-position: center;
+    background-size: cover;
+    background-repeat: no-repeat;
+}
+
+/* buster */
+
+.teams {
+    display: flex;
+    padding: 10px;
+    flex-direction: row;
+} 
+
+.red, .blue {
+    padding: 50px;
+}
+
+.notify {
+    display: none;
+    color: white;
+    font-size: 100px ;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+}
+
+.status {
+    width: 16vw;
+    height: 14vh;
+    background: gray;
+    opacity: 0.6;
+    position: absolute;
+    top: 0%;
+    right: 0%;
+    border-bottom-left-radius: 20px;
+    display: flex;
+    flex-direction: column;
+    padding: 10px;
+}
+
+.score {
+    margin: auto 3px;
+}
+
+::selection {
+    background: none;
+}
+
+.booster-container {
+    width: 80%;
+    height: 20px;
+    border: 2px solid black;
+    padding: 1.5px;
+}
+
+.booster {
+    background: red;
+    width: 100%;
+    height: 100%;
+}
+
+.sheild-container {
+    margin-top: 4px;
+    width: 90%;
+    height: 20px;
+    border: 2px solid black;
+    padding: 1.5px;
+}
+
+.sheild {
+    background: rgb(85, 84, 84);
+    width: 100%;
+    height: 100%;
+}
+
+.spikesTop {
+    position: absolute;
+    top: 0%;
+    left: 0%;
+    z-index: 100;
+    transform: translate(0%, -75%);
+    opacity: 0.3;
+}
+
+.spikesLeft {
+    position: absolute;
+    top: 0%;
+    left: 0%;
+    z-index: 100;
+    transform: translateX(-75%);
+    opacity: 0.3;
+}
+
+.spikesBelow {
+    position: absolute;
+    bottom: 0%;
+    left: 0%;
+    z-index: 100;
+    transform: translateY(75%);
+    opacity: 0.3;
+}
+
+.spikesRight {
+    position: absolute;
+    bottom: 0%;
+    right: 0%;
+    z-index: 100;
+    transform: translateX(75%);
+    opacity: 0.3;
+}
+
+.redScore {
+    font-size: 25px;
+    color: rgb(255, 255, 255, 0.5);
+    position: absolute;
+    top: 5%;
+    left: 5%;
+}
+
+.blueScore {
+    font-size: 25px;
+    color: rgb(255, 255, 255, 0.5);
+    position: absolute;
+    top: 5%;
+    right: 5%;
+}
+
+.gameOver {
+    /* width: 250px; */
+    /* height: 150px; */
+    padding: 10px;
+    background: rgb(255, 255, 255, 0.3);
+    border-radius: 10px;
+    text-align: center;
+    font-size: 100px;
+    font-weight: bold;
+    color: rgb(255, 255, 255, 0.8);
+    display: none;
+    position: absolute;
+    left: 50%;
+    top: 40%;
+    transform: translate(-50%, -40%);
+    z-index: 10000;
+}

@@ -1,0 +1,158 @@
+  html {
+    margin: 0;
+    padding: 0;
+    width: 100%;
+    height: 100%;
+    overflow: hidden;
+    font-family: "Monument Extended", Arial, Helvetica, sans-serif;
+  }
+  
+  body {
+    color: white;
+    margin: 0;
+    padding: 0;
+    perspective: 1px;
+    transform-style: preserve-3d;
+    height: 100%;
+    width: 100%;
+    overflow: hidden;
+  }
+
+  ::selection {
+    background: none;
+  }
+  
+  header {
+    box-sizing: border-box;
+    min-height: 100vh;
+    position: relative;
+    top: 0%;
+    transform-style: inherit;
+    width: 100vw;
+    text-align: center;
+    text-transform: uppercase;
+    font-family: "Nerko One", cursive;
+    font-size: 150px;
+    color: #1bbc96;
+  }
+  
+  header h1 {
+    margin: 0;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    transition: all 600ms ease;
+  }
+  
+  header,
+  header:before {
+    background: 50% 50% / cover;
+  }
+  
+  header::before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    display: block;
+    background: linear-gradient(rgba(0, 0, 0, 0.2), rgba(0, 0, 0, 0.4)), url("../assets/images/underwater.jpg") ;
+    background-size: cover;
+    transform-origin: center center 0;
+    transform: translateZ(-1px) scale(2);
+    z-index: -1;
+    min-height: 100vh;
+  }
+  
+  span {
+    position: absolute;
+    bottom: -50px;
+    background: transparent;
+    border-radius: 50%;
+    pointer-events: none;
+    box-shadow: inset 0 0 10px rgba(255, 255, 255, 0.5);
+    animation: animate 4s linear infinite;
+  }
+  span:before {
+    content: "";
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    transform: scale(0.25) translate(-70%, -70%);
+    background: radial-gradient(#fff, transparent);
+    border-radius: 50%;
+  }
+  @keyframes animate {
+    0% {
+      transform: translateY(0%);
+      opacity: 1;
+    }
+    99% {
+      opacity: 1;
+    }
+    100% {
+      transform: translateY(-1200%);
+      opacity: 1;
+    }
+  }
+  .container1 {
+    position: relative;
+  }
+  .box-1 {
+    background-color: rgba(108, 189, 221, 0.692);
+  }
+  .btn-one {
+    color: #fff;
+    transition: all 0.3s;
+    position: absolute;
+    left: 0;
+    bottom: 0;
+    right: 0;
+    text-align: center;
+  }
+  .btn-one h4 {
+    transition: all 0.3s;
+  }
+  .btn-one::before {
+    content: "";
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: 1;
+    opacity: 0;
+    transition: all 0.3s;
+    border-top-width: 1px;
+    border-bottom-width: 1px;
+    border-top-style: solid;
+    border-bottom-style: solid;
+    border-top-color: rgba(255, 255, 255, 0.5);
+    border-bottom-color: rgba(255, 255, 255, 0.5);
+    transform: scale(0.1, 1);
+  }
+  .btn-one:hover h4 {
+    letter-spacing: 2px;
+  }
+  .btn-one:hover::before {
+    opacity: 1;
+    transform: scale(1, 1);
+  }
+  .btn-one::after {
+    content: "";
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: 1;
+    transition: all 0.3s;
+    background-color: rgba(255, 255, 255, 0.1);
+  }
+  .btn-one:hover::after {
+    opacity: 0;
+    transform: scale(0.1, 1);
+  }
+  
